@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,6 +21,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 @Component // Spring'in yönettiği filter
 @RequiredArgsConstructor
+@Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter { // her istekte JWT kontrolü
 
     private final JwtTokenService jwtTokenService;
@@ -38,6 +40,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter { // her istek
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authentication); // kullanıcıyı bağla
             } catch (Exception ex) {
+                log.warn("JWT doğrulanamadı: {}", ex.getMessage());
                 SecurityContextHolder.clearContext(); // token geçersizse context temizle
             }
         }

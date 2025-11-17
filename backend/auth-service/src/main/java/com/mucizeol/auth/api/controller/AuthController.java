@@ -5,6 +5,7 @@ import com.mucizeol.auth.api.dto.request.RefreshTokenRequest;
 import com.mucizeol.auth.api.dto.request.RegisterRequest;
 import com.mucizeol.auth.api.dto.response.AuthTokensResponse;
 import com.mucizeol.auth.api.dto.response.UserResponse;
+import com.mucizeol.auth.exception.BusinessException;
 import com.mucizeol.auth.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -60,7 +61,7 @@ public class AuthController {
     private Long getCurrentUserId() { // SecurityContext'ten userId al
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !(authentication.getPrincipal() instanceof com.mucizeol.auth.security.userdetails.AuthUserDetails userDetails)) {
-            throw new IllegalStateException("Kimlik doğrulama bulunamadı");
+            throw new BusinessException("AUTH.AUTHENTICATION_REQUIRED", "Kimlik doğrulama bulunamadı");
         }
         return userDetails.getId();
     }

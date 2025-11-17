@@ -47,7 +47,7 @@ public class UserEntity { // kullanıcılar tablosu için entity
     @Column(name = "phone_number", nullable = false, length = 20) // telefon kolonu
     private String phoneNumber; // telefon
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false) // rol ilişkisi
+    @ManyToOne(fetch = FetchType.EAGER, optional = false) // rol ilişkisi (auth için eager)
     @JoinColumn(name = "role_id", nullable = false) // foreign key
     private RoleEntity role; // kullanıcı rolü
 
