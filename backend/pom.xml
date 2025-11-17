@@ -28,9 +28,9 @@
     <!-- Maven, bu klasörlerde de birer pom.xml dosyası arayacak -->
     <modules>
         <module>auth-service</module>
-        <module>listing-service</module>
+        <!-- <module>listing-service</module>
         <module>request-service</module>
-        <module>gateway-service</module>
+        <module>gateway-service</module>-->
     </modules>
 
     <!-- 5. Tüm modüllerin kullanacağı ortak versiyon ve ayarlar -->
