@@ -1,0 +1,64 @@
+# IntelliJ IDEA proje klasörü
+.idea/
+
+# Gizli çevre değişkenleri (environment variables) dosyası
+.env
+
+# Derlenmiş Java class dosyaları
+*.class
+
+# Maven'in build çıktı klasörü
+target/
+
+# Oluşturulan JAR/WAR/EAR dosyaları
+*.jar
+*.war
+*.ear
+
+# Paketleme sırasında oluşan ZIP ve TAR dosyaları
+*.zip
+*.tar
+*.tar.gz
+
+# Maven wrapper dosyaları (eğer kullanılıyorsa)
+.mvn/
+mvnw
+mvnw.cmd
+
+# Node modülleri (en önemlisi)
+node_modules/
+frontend/node_modules/
+
+# React/Vite/Next build çıktı klasörleri
+dist/
+build/
+.next/
+out/
+
+
+# NPM debug logları
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+
+# Log dosyaları
+*.log
+logs/
+
+# Geçici dosyalar
+*.tmp
+
+# MacOS sistem dosyası
+.DS_Store
+
+# Windows thumbnail cache
+Thumbs.db
+ehthumbs.db
+
+# VS Code ayarları
+.vscode/
+
+# Build raporları
+*.jsw
+*.load

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- 1. Spring Boot'un ana POM'undan miras alıyoruz -->
+    <!-- Bu, bize varsayılan Spring Boot ayarlarını ve bağımlılıklarını sağlar -->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <!-- Güncel ve stabil bir Spring Boot sürümü seçiyoruz (Java 17+ gerektirir) -->
+        <version>3.3.5</version>
+        <relativePath/> <!-- Repodan parent'ı bul -->
+    </parent>
+
+    <!-- 2. Bu ana projenin kimlik bilgileri -->
+    <groupId>com.mucizeol</groupId>
+    <artifactId>backend</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+
+    <!-- 3. KRİTİK: Bu bir yönetici POM'udur, JAR/WAR değil -->
+    <packaging>pom</packaging>
+    <name>mucizeol-backend-parent</name>
+    <description>Ana Parent POM - MucizeOl Backend Mikroservisleri</description>
+
+    <!-- 4. Bu projeye dahil olan alt modüller (servisler) -->
+    <!-- Maven, bu klasörlerde de birer pom.xml dosyası arayacak -->
+    <modules>
+        <module>auth-service</module>
+        <module>listing-service</module>
+        <module>request-service</module>
+        <module>gateway-service</module>
+    </modules>
+
+    <!-- 5. Tüm modüllerin kullanacağı ortak versiyon ve ayarlar -->
+    <properties>
+        <!-- Java 17 kullanacağımızı belirtiyoruz -->
+        <java.version>17</java.version>
+
+        <!--
+          Spring Cloud sürümü.
+          Bu sürüm (2023.0.2), Spring Boot 3.3.x sürümü ile uyumludur.
+          Gateway ve diğer mikroservis bileşenleri için gereklidir.
+        -->
+        <spring-cloud.version>2023.0.2</spring-cloud.version>
+    </properties>
+
+    <!--
+      6. BAĞIMLILIK YÖNETİMİ (En Önemli Kısım)
+      NOT: Bu bölüm, modüllere bağımlılık "eklemez",
+      sadece modüller bir bağımlılık eklerse HANGİ VERSİYONU kullanacaklarını "yönetir".
+    -->
+    <dependencyManagement>
+        <dependencies>
+            <!--
+              Tüm Spring Cloud bağımlılıklarının (Gateway, OpenFeign vb.)
+              versiyonlarını tek bir yerden yönetmek için Spring Cloud BOM (Bill of Materials)
+            -->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <!-- 7. Ortak Build Ayarları -->
+    <build>
+        <plugins>
+            <!-- Tüm modüllerin Java 17 ile derleneceğinden emin ol -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
