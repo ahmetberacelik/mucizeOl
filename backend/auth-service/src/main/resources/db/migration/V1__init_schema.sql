@@ -1,10 +1,12 @@
 -- MucizeOl başlangıç şeması
 
+-- Roller tablosunu oluştur
 CREATE TABLE roles (
     role_id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     role_name VARCHAR(50) NOT NULL UNIQUE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Kullanıcı bilgilerini tut
 CREATE TABLE users (
     user_id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     first_name VARCHAR(100) NOT NULL,
@@ -19,16 +21,19 @@ CREATE TABLE users (
     CONSTRAINT fk_users_role FOREIGN KEY (role_id) REFERENCES roles (role_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Şehir lookup tablosu
 CREATE TABLE cities (
     city_id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     city_name VARCHAR(120) NOT NULL UNIQUE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Hayvan türleri tablosu
 CREATE TABLE animal_types (
     type_id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     type_name VARCHAR(120) NOT NULL UNIQUE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Hayvan cinslerini tut
 CREATE TABLE animal_breeds (
     breed_id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     type_id INT UNSIGNED NOT NULL,
@@ -36,6 +41,7 @@ CREATE TABLE animal_breeds (
     CONSTRAINT fk_breeds_type FOREIGN KEY (type_id) REFERENCES animal_types (type_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- İlan kayıtlarını oluştur
 CREATE TABLE listings (
     listing_id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     user_id BIGINT UNSIGNED NOT NULL,
@@ -56,6 +62,7 @@ CREATE TABLE listings (
     CONSTRAINT fk_listings_breed FOREIGN KEY (animal_breed_id) REFERENCES animal_breeds (breed_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Sahiplenme talepleri tablosu
 CREATE TABLE adoption_requests (
     request_id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     user_id BIGINT UNSIGNED NOT NULL,
@@ -68,6 +75,7 @@ CREATE TABLE adoption_requests (
     CONSTRAINT fk_requests_listing FOREIGN KEY (listing_id) REFERENCES listings (listing_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Varsayılan roller ekle
 INSERT INTO roles (role_id, role_name)
 VALUES (1, 'ROLE_USER'), (2, 'ROLE_ADMIN')
 ON DUPLICATE KEY UPDATE role_name = VALUES(role_name);

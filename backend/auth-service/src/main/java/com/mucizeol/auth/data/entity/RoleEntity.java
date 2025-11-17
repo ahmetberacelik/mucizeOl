@@ -10,19 +10,19 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@Entity
-@Table(name = "roles")
-public class RoleEntity {
+@Getter // Lombok getter üretir
+@Setter // Lombok setter üretir
+@NoArgsConstructor // parametresiz ctor
+@Entity // JPA entity tanımı
+@Table(name = "roles") // tablo adı eşlemesi
+public class RoleEntity { // roller tablosu için entity
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "role_id")
-    private Long id;
+    @Id // birincil anahtar
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // otomatik artan
+    @Column(name = "role_id") // kolon adı
+    private Long id; // rol kimliği
 
-    @Column(name = "role_name", nullable = false, unique = true, length = 50)
-    private String name;
+    @Column(name = "role_name", nullable = false, unique = true, length = 50) // rol adı kolonu
+    private String name; // rol adı
 }
 
