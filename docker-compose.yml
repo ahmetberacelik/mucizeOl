@@ -27,6 +27,36 @@ services:
       timeout: 5s
       retries: 5
 
+  auth-service:
+    build:
+      context: ./backend
+      dockerfile: auth-service/Dockerfile
+    depends_on:
+      mysql-db:
+        condition: service_healthy
+    env_file: .env
+    environment:
+      - SERVER_PORT=${SERVER_PORT}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+    ports:
+      - "${SERVER_PORT}:${SERVER_PORT}"
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:5.2.1
+    depends_on:
+      mysql-db:
+        condition: service_healthy
+    environment:
+      - PMA_HOST=mysql-db
+      - PMA_PORT=3306
+      - PMA_USER=${MYSQL_USER}
+      - PMA_PASSWORD=${MYSQL_PASSWORD}
+    ports:
+      - "8085:80"
 volumes:
   mucizeol-db-data:
     driver: local
