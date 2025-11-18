@@ -108,6 +108,13 @@ public class ListingServiceImpl implements ListingService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public Page<ListingResponse> getMyListings(Long userId, Pageable pageable) {
+        return listingRepository.findByUserIdOrderByCreatedAtDesc(userId, pageable)
+                .map(this::mapToResponse);
+    }
+
+    @Override
     public ListingResponse updateListing(Long id, UpdateListingRequest request, Long userId) {
         ListingEntity listing = listingRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("LISTING.NOT_FOUND", "İlan bulunamadı"));

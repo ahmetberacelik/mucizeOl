@@ -2,7 +2,7 @@ package com.mucizeol.request.service;
 
 import com.mucizeol.request.api.dto.request.CreateAdoptionRequestRequest;
 import com.mucizeol.request.api.dto.response.AdoptionRequestResponse;
-import com.mucizeol.request.api.dto.response.MessageResponse;
+import com.mucizeol.request.api.dto.response.SimpleMessageResponse;
 
 import java.util.List;
 
@@ -26,11 +26,11 @@ public interface AdoptionRequestService {
     /**
      * Talebi onaylar (ilan sahibi)
      */
-    MessageResponse approveRequest(Long requestId, Long userId);
+    SimpleMessageResponse approveRequest(Long requestId, Long userId);
 
     /**
      * Talebi reddeder (ilan sahibi)
      */
-    MessageResponse rejectRequest(Long requestId, Long userId);
+    SimpleMessageResponse rejectRequest(Long requestId, Long userId);
 }
 

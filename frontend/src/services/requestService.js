@@ -2,18 +2,39 @@ import api from './api';
 
 export const requestService = {
   createRequest: async (data) => {
-    const response = await api.post('/requests', data);
-    return response.data;
+    console.log('requestService.createRequest çağrılıyor:', data);
+    try {
+      const response = await api.post('/requests', data);
+      console.log('requestService.createRequest başarılı:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('requestService.createRequest hatası:', error);
+      throw error;
+    }
   },
 
   getMyRequests: async () => {
-    const response = await api.get('/requests/my-requests');
-    return response.data;
+    console.log('getMyRequests çağrılıyor');
+    try {
+      const response = await api.get('/requests/my-requests');
+      console.log('getMyRequests başarılı:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('getMyRequests hatası:', error);
+      throw error;
+    }
   },
 
   getMyListingsRequests: async () => {
-    const response = await api.get('/requests/my-listings-requests');
-    return response.data;
+    console.log('getMyListingsRequests çağrılıyor');
+    try {
+      const response = await api.get('/requests/my-listings-requests');
+      console.log('getMyListingsRequests başarılı:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('getMyListingsRequests hatası:', error);
+      throw error;
+    }
   },
 
   approveRequest: async (id) => {

@@ -9,6 +9,9 @@ const api = axios.create({
   },
 });
 
+// Debug için API base URL'i logla
+console.log('API Base URL:', API_BASE_URL);
+
 // Request interceptor - Her istekte token ekle
 api.interceptors.request.use(
   (config) => {
@@ -16,17 +19,38 @@ api.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+    console.log('API İsteği:', {
+      method: config.method?.toUpperCase(),
+      url: config.url,
+      baseURL: config.baseURL,
+      fullURL: `${config.baseURL}${config.url}`,
+      hasToken: !!token
+    });
     return config;
   },
   (error) => {
+    console.error('API İstek Hatası:', error);
     return Promise.reject(error);
   }
 );
 
 // Response interceptor - 401 hatası durumunda token refresh
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    console.log('API Yanıtı:', {
+      status: response.status,
+      url: response.config.url,
+      data: response.data
+    });
+    return response;
+  },
   async (error) => {
+    console.error('API Yanıt Hatası:', {
+      status: error.response?.status,
+      url: error.config?.url,
+      message: error.message,
+      responseData: error.response?.data
+    });
     const originalRequest = error.config;
 
     // 401 hatası ve daha önce retry edilmemişse

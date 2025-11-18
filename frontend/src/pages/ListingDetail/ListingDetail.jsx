@@ -21,6 +21,24 @@ const ListingDetail = () => {
   const [submitting, setSubmitting] = useState(false);
   const [requestError, setRequestError] = useState('');
   const [requestSuccess, setRequestSuccess] = useState(false);
+  
+  // Edit state
+  const [showEditForm, setShowEditForm] = useState(false);
+  const [editData, setEditData] = useState({
+    title: '',
+    description: '',
+    age: '',
+    gender: '',
+    status: ''
+  });
+  const [editing, setEditing] = useState(false);
+  const [editError, setEditError] = useState('');
+  const [editSuccess, setEditSuccess] = useState(false);
+  
+  // Delete state
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState('');
 
   useEffect(() => {
     const fetchListing = async () => {
@@ -30,6 +48,15 @@ const ListingDetail = () => {
         
         const listingData = await listingService.getListingById(id);
         setListing(listingData);
+        
+        // Edit form için başlangıç değerlerini ayarla
+        setEditData({
+          title: listingData.title || '',
+          description: listingData.description || '',
+          age: listingData.age || '',
+          gender: listingData.gender || '',
+          status: listingData.status || 'Mevcut'
+        });
         
         // Meta bilgilerini çek
         const [cities, types] = await Promise.all([
@@ -59,16 +86,67 @@ const ListingDetail = () => {
     fetchListing();
   }, [id]);
 
+  const handleEdit = async (e) => {
+    e.preventDefault();
+    setEditError('');
+    setEditing(true);
+
+    try {
+      const updateData = {
+        title: editData.title.trim(),
+        description: editData.description.trim(),
+        age: parseInt(editData.age),
+        gender: editData.gender,
+        status: editData.status
+      };
+
+      const updatedListing = await listingService.updateListing(id, updateData);
+      setListing(updatedListing);
+      setShowEditForm(false);
+      setEditSuccess(true);
+      
+      setTimeout(() => {
+        setEditSuccess(false);
+      }, 5000);
+    } catch (err) {
+      console.error('İlan güncellenirken hata:', err);
+      setEditError(err.response?.data?.message || 'İlan güncellenirken bir hata oluştu');
+    } finally {
+      setEditing(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    setDeleteError('');
+    setDeleting(true);
+
+    try {
+      await listingService.deleteListing(id);
+      navigate('/profile?tab=my-listings');
+    } catch (err) {
+      console.error('İlan silinirken hata:', err);
+      setDeleteError(err.response?.data?.message || 'İlan silinirken bir hata oluştu');
+      setDeleting(false);
+    }
+  };
+
   const handleSubmitRequest = async (e) => {
     e.preventDefault();
     setRequestError('');
     setSubmitting(true);
 
     try {
-      await requestService.createRequest({
+      console.log('Talep gönderiliyor:', {
+        listingId: parseInt(id),
+        requestMessage: requestMessage.trim()
+      });
+      
+      const response = await requestService.createRequest({
         listingId: parseInt(id),
         requestMessage: requestMessage.trim(),
       });
+      
+      console.log('Talep başarıyla oluşturuldu:', response);
       
       setRequestSuccess(true);
       setShowRequestForm(false);
@@ -79,7 +157,60 @@ const ListingDetail = () => {
       }, 5000);
     } catch (err) {
       console.error('Talep oluşturulurken hata:', err);
-      setRequestError(err.response?.data?.message || 'Talep oluşturulurken bir hata oluştu');
+      console.error('Hata detayları:', {
+        message: err.message,
+        status: err.response?.status,
+        statusText: err.response?.statusText,
+        data: err.response?.data,
+        url: err.config?.url,
+        baseURL: err.config?.baseURL,
+        fullURL: err.config ? `${err.config.baseURL}${err.config.url}` : 'N/A'
+      });
+      
+      // Daha detaylı hata mesajı
+      let errorMessage = 'Talep oluşturulurken bir hata oluştu';
+      let errorDetails = '';
+      
+      if (err.response?.data) {
+        if (err.response.data.message) {
+          errorMessage = err.response.data.message;
+        } else if (err.response.data.error) {
+          errorMessage = err.response.data.error;
+        } else if (typeof err.response.data === 'string') {
+          errorMessage = err.response.data;
+        }
+        
+        // Validation hatalarını göster
+        if (err.response.data.errors) {
+          const validationErrors = Object.values(err.response.data.errors).flat();
+          errorDetails = validationErrors.join(', ');
+        }
+      } else if (err.message) {
+        errorMessage = err.message;
+      }
+      
+      // Özel hata mesajları
+      if (err.response?.status === 401) {
+        errorMessage = 'Oturumunuz sona ermiş. Lütfen tekrar giriş yapın.';
+      } else if (err.response?.status === 403) {
+        errorMessage = 'Bu işlem için yetkiniz yok.';
+      } else if (err.response?.status === 404) {
+        errorMessage = 'İlan bulunamadı.';
+      } else if (err.response?.status === 409) {
+        errorMessage = 'Bu ilana daha önce talep gönderdiniz.';
+      } else if (err.response?.status === 400) {
+        errorMessage = errorMessage || 'Geçersiz istek. Lütfen bilgilerinizi kontrol edin.';
+        if (errorDetails) {
+          errorMessage += ` (${errorDetails})`;
+        }
+      } else if (!err.response) {
+        errorMessage = `Sunucuya bağlanılamıyor. ${err.message || 'Backend servisi çalışıyor mu kontrol edin.'}`;
+        if (err.code === 'ERR_NETWORK') {
+          errorMessage = 'Ağ hatası. Backend servisi çalışıyor mu ve API URL doğru mu kontrol edin.';
+        }
+      }
+      
+      setRequestError(errorMessage);
     } finally {
       setSubmitting(false);
     }
@@ -275,8 +406,28 @@ const ListingDetail = () => {
                       <h3 className="text-xl font-bold text-gray-900 mb-4">Sahiplenme Talebi</h3>
                       
                       {requestError && (
-                        <div className="mb-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
-                          {requestError}
+                        <div className="mb-4 bg-red-50 border-2 border-red-400 rounded-xl p-4 shadow-lg animate-pulse">
+                          <div className="flex items-start gap-3">
+                            <svg className="w-6 h-6 text-red-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                            </svg>
+                            <div className="flex-1">
+                              <h4 className="font-bold text-red-900 mb-2 text-lg">Hata Oluştu</h4>
+                              <p className="text-red-800 font-medium">{requestError}</p>
+                              <p className="text-red-600 text-sm mt-2">
+                                Lütfen tarayıcı konsolunu (F12) açarak daha detaylı hata bilgilerini kontrol edin.
+                              </p>
+                            </div>
+                            <button
+                              onClick={() => setRequestError('')}
+                              className="text-red-600 hover:text-red-800 transition-colors"
+                              aria-label="Hata mesajını kapat"
+                            >
+                              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                              </svg>
+                            </button>
+                          </div>
                         </div>
                       )}
                       
@@ -337,10 +488,167 @@ const ListingDetail = () => {
               )}
               
               {isOwner && (
-                <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-6">
-                  <p className="text-blue-800 font-medium">
-                    Bu ilan size ait. Sahiplenme taleplerini profil sayfanızdan görüntüleyebilirsiniz.
-                  </p>
+                <div className="space-y-4">
+                  <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-6">
+                    <p className="text-blue-800 font-medium mb-4">
+                      Bu ilan size ait. Sahiplenme taleplerini profil sayfanızdan görüntüleyebilirsiniz.
+                    </p>
+                    <div className="flex gap-3">
+                      <button
+                        onClick={() => setShowEditForm(!showEditForm)}
+                        className="flex-1 px-4 py-2 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-colors"
+                      >
+                        {showEditForm ? 'İptal' : 'Düzenle'}
+                      </button>
+                      <button
+                        onClick={() => setShowDeleteConfirm(true)}
+                        className="flex-1 px-4 py-2 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition-colors"
+                      >
+                        Sil
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Edit Form */}
+                  {showEditForm && (
+                    <div className="bg-white rounded-xl p-6 shadow-md border border-gray-100">
+                      <h3 className="text-xl font-bold text-gray-900 mb-4">İlanı Düzenle</h3>
+                      
+                      {editSuccess && (
+                        <div className="mb-4 bg-green-50 border-2 border-green-200 rounded-xl p-4">
+                          <p className="text-green-800 font-medium">İlan başarıyla güncellendi!</p>
+                        </div>
+                      )}
+                      
+                      {editError && (
+                        <div className="mb-4 bg-red-50 border-2 border-red-200 rounded-xl p-4">
+                          <p className="text-red-800 font-medium">{editError}</p>
+                        </div>
+                      )}
+                      
+                      <form onSubmit={handleEdit} className="space-y-4">
+                        <div>
+                          <label className="block text-sm font-semibold text-gray-700 mb-2">
+                            Başlık *
+                          </label>
+                          <input
+                            type="text"
+                            required
+                            value={editData.title}
+                            onChange={(e) => setEditData({...editData, title: e.target.value})}
+                            className="w-full px-4 py-2 border-2 border-gray-200 rounded-xl focus:border-primary-500 focus:ring-2 focus:ring-primary-200"
+                          />
+                        </div>
+                        
+                        <div>
+                          <label className="block text-sm font-semibold text-gray-700 mb-2">
+                            Açıklama *
+                          </label>
+                          <textarea
+                            rows={5}
+                            required
+                            value={editData.description}
+                            onChange={(e) => setEditData({...editData, description: e.target.value})}
+                            className="w-full px-4 py-2 border-2 border-gray-200 rounded-xl focus:border-primary-500 focus:ring-2 focus:ring-primary-200 resize-none"
+                          />
+                        </div>
+                        
+                        <div className="grid grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-sm font-semibold text-gray-700 mb-2">
+                              Yaş *
+                            </label>
+                            <input
+                              type="number"
+                              min="0"
+                              required
+                              value={editData.age}
+                              onChange={(e) => setEditData({...editData, age: e.target.value})}
+                              className="w-full px-4 py-2 border-2 border-gray-200 rounded-xl focus:border-primary-500 focus:ring-2 focus:ring-primary-200"
+                            />
+                          </div>
+                          
+                          <div>
+                            <label className="block text-sm font-semibold text-gray-700 mb-2">
+                              Cinsiyet *
+                            </label>
+                            <select
+                              required
+                              value={editData.gender}
+                              onChange={(e) => setEditData({...editData, gender: e.target.value})}
+                              className="w-full px-4 py-2 border-2 border-gray-200 rounded-xl focus:border-primary-500 focus:ring-2 focus:ring-primary-200"
+                            >
+                              <option value="">Seçiniz</option>
+                              <option value="Dişi">Dişi</option>
+                              <option value="Erkek">Erkek</option>
+                            </select>
+                          </div>
+                        </div>
+                        
+                        <div>
+                          <label className="block text-sm font-semibold text-gray-700 mb-2">
+                            Durum *
+                          </label>
+                          <select
+                            required
+                            value={editData.status}
+                            onChange={(e) => setEditData({...editData, status: e.target.value})}
+                            className="w-full px-4 py-2 border-2 border-gray-200 rounded-xl focus:border-primary-500 focus:ring-2 focus:ring-primary-200"
+                          >
+                            <option value="Mevcut">Mevcut</option>
+                            <option value="Sahiplendirildi">Sahiplendirildi</option>
+                            <option value="Askıda">Askıda</option>
+                          </select>
+                        </div>
+                        
+                        <button
+                          type="submit"
+                          disabled={editing}
+                          className="w-full px-6 py-3 bg-gradient-to-r from-primary-600 to-primary-700 text-white font-semibold rounded-xl hover:from-primary-700 hover:to-primary-800 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          {editing ? 'Kaydediliyor...' : 'Kaydet'}
+                        </button>
+                      </form>
+                    </div>
+                  )}
+
+                  {/* Delete Confirmation */}
+                  {showDeleteConfirm && (
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                      <div className="bg-white rounded-xl p-6 max-w-md w-full shadow-2xl">
+                        <h3 className="text-xl font-bold text-gray-900 mb-4">İlanı Sil</h3>
+                        <p className="text-gray-700 mb-6">
+                          Bu ilanı silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.
+                        </p>
+                        
+                        {deleteError && (
+                          <div className="mb-4 bg-red-50 border-2 border-red-200 rounded-xl p-4">
+                            <p className="text-red-800 font-medium">{deleteError}</p>
+                          </div>
+                        )}
+                        
+                        <div className="flex gap-3">
+                          <button
+                            onClick={() => {
+                              setShowDeleteConfirm(false);
+                              setDeleteError('');
+                            }}
+                            disabled={deleting}
+                            className="flex-1 px-4 py-2 bg-gray-100 text-gray-700 font-semibold rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50"
+                          >
+                            İptal
+                          </button>
+                          <button
+                            onClick={handleDelete}
+                            disabled={deleting}
+                            className="flex-1 px-4 py-2 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50"
+                          >
+                            {deleting ? 'Siliniyor...' : 'Sil'}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
               

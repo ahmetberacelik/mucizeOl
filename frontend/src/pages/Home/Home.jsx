@@ -40,7 +40,11 @@ const Home = () => {
         params.animalBreedId = currentFilters.animalBreedId;
       }
 
+      console.log('API çağrısı yapılıyor:', params);
       const data = await listingService.getListings(params);
+      console.log('API yanıtı:', data);
+      console.log('İlan sayısı:', data.content?.length || 0);
+      
       setListings(data.content || []);
       setPagination({
         page: data.number || 0,
@@ -50,7 +54,13 @@ const Home = () => {
       });
     } catch (err) {
       console.error('İlanlar yüklenirken hata:', err);
-      setError('İlanlar yüklenirken bir hata oluştu. Backend servisi çalışıyor mu kontrol edin.');
+      console.error('Hata detayları:', {
+        message: err.message,
+        response: err.response?.data,
+        status: err.response?.status,
+        url: err.config?.url
+      });
+      setError(`İlanlar yüklenirken bir hata oluştu: ${err.response?.data?.message || err.message || 'Bilinmeyen hata'}. Backend servisi çalışıyor mu kontrol edin.`);
       setListings([]);
     } finally {
       setLoading(false);
@@ -93,13 +103,27 @@ const Home = () => {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             {/* Text Content */}
             <div className="text-center md:text-left">
-              <h1 className="text-5xl md:text-6xl font-extrabold text-white mb-6 leading-tight">
-                Hayvan Sahiplendirme
-                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 to-yellow-400">
-                  Platformu
-                </span>
-              </h1>
-              <p className="text-xl text-white/90 mb-8 leading-relaxed">
+              {/* MucizeOl Logo/Brand */}
+              <div className="mb-8">
+                <h1 className="text-7xl md:text-8xl font-black text-white mb-4 leading-none drop-shadow-2xl">
+                  <span className="block text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 via-yellow-300 to-yellow-400 animate-pulse">
+                    Mucize
+                  </span>
+                  <span className="block text-white">Ol</span>
+                </h1>
+              </div>
+              
+              {/* Slogan */}
+              <div className="mb-8">
+                <p className="text-2xl md:text-3xl font-bold text-white mb-4 leading-relaxed drop-shadow-lg">
+                  Bir hayvana mucize olmak,
+                </p>
+                <p className="text-2xl md:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 to-yellow-400 leading-relaxed drop-shadow-lg">
+                  bir hayvanın da bize mucize olabileceği
+                </p>
+              </div>
+              
+              <p className="text-lg text-white/90 mb-8 leading-relaxed">
                 Sevimli dostlarımız için yeni bir yuva bulalım. Her hayvan bir aileyi bekliyor.
               </p>
               <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 text-white/80 mb-8">

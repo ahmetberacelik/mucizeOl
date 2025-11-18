@@ -62,6 +62,12 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
+                <Link to="/contact" className="text-gray-300 hover:text-primary-400 transition-colors duration-300 flex items-center gap-2 group">
+                  <span className="w-0 group-hover:w-2 h-0.5 bg-primary-400 transition-all duration-300"></span>
+                  İletişim
+                </Link>
+              </li>
+              <li>
                 <Link to="/login" className="text-gray-300 hover:text-primary-400 transition-colors duration-300 flex items-center gap-2 group">
                   <span className="w-0 group-hover:w-2 h-0.5 bg-primary-400 transition-all duration-300"></span>
                   Giriş Yap
