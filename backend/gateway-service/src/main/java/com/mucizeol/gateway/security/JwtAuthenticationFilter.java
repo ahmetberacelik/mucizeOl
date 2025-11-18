@@ -79,11 +79,12 @@ public class JwtAuthenticationFilter implements GlobalFilter, Ordered {
             return true;
         }
 
-        // İlanlar ve istekler için sadece GET public
-        if (path.startsWith("/api/v1/listings") || path.startsWith("/api/v1/requests")) {
+        // Sadece ilanlar için GET public (listing listesi, detay herkes görebilir)
+        if (path.startsWith("/api/v1/listings")) {
             return HttpMethod.GET.equals(method);
         }
 
+        // Request endpoint'leri TAMAMEN protected (kullanıcı talepleri, gizli)
         return false;
     }
 

@@ -29,7 +29,7 @@
     <modules>
         <module>auth-service</module>
         <module>listing-service</module>
-        <!-- <module>request-service</module>-->
+        <module>request-service</module>
         <module>gateway-service</module>
     </modules>
 

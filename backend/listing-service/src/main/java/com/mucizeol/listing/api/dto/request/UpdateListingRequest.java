@@ -21,6 +21,9 @@ public class UpdateListingRequest {
     @Size(max = 10)
     private String gender;
 
+    @Size(max = 20)
+    private String status; // "Mevcut" veya "Sahiplendirildi"
+
     // Not: Tür, cins, şehir ve resim değiştirilemez!
 }
 
