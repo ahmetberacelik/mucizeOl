@@ -80,3 +80,27 @@ INSERT INTO roles (role_id, role_name)
 VALUES (1, 'ROLE_USER'), (2, 'ROLE_ADMIN')
 ON DUPLICATE KEY UPDATE role_name = VALUES(role_name);
 
+-- Büyük şehirler ekle
+INSERT INTO cities (city_name) VALUES
+('İstanbul'), ('Ankara'), ('İzmir'), ('Antalya'), ('Bursa');
+
+-- Hayvan türlerini ekle
+INSERT INTO animal_types (type_name) VALUES
+('Kedi'), ('Köpek');
+
+-- Kedi cinsleri (type_id = 1)
+INSERT INTO animal_breeds (type_id, breed_name) VALUES
+(1, 'Tekir'),
+(1, 'Van Kedisi'),
+(1, 'British Shorthair'),
+(1, 'Scottish Fold'),
+(1, 'Melez');
+
+-- Köpek cinsleri (type_id = 2)
+INSERT INTO animal_breeds (type_id, breed_name) VALUES
+(2, 'Golden Retriever'),
+(2, 'Kangal'),
+(2, 'Husky'),
+(2, 'Bulldog'),
+(2, 'Melez');
+
