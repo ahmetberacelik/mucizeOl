@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
@@ -26,16 +27,16 @@ public class JwtAuthenticationFilter implements GlobalFilter, Ordered {
             "/api/v1/auth/register",
             "/api/v1/auth/login",
             "/api/v1/auth/refresh",
-            "/api/v1/listings", // GET ilanları herkes görebilir
             "/api/v1/meta/" // Şehir, tür, cins bilgileri public
     );
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         String path = exchange.getRequest().getPath().value();
+        HttpMethod method = exchange.getRequest().getMethod();
 
         // Public endpoint kontrolü
-        if (isPublicPath(path)) {
+        if (isPublicPath(path, method)) {
             return chain.filter(exchange);
         }
 
@@ -72,8 +73,18 @@ public class JwtAuthenticationFilter implements GlobalFilter, Ordered {
         }
     }
 
-    private boolean isPublicPath(String path) {
-        return PUBLIC_PATHS.stream().anyMatch(path::startsWith);
+    private boolean isPublicPath(String path, HttpMethod method) {
+        // Auth ve meta endpoint'leri her zaman public
+        if (PUBLIC_PATHS.stream().anyMatch(path::startsWith)) {
+            return true;
+        }
+
+        // İlanlar ve istekler için sadece GET public
+        if (path.startsWith("/api/v1/listings") || path.startsWith("/api/v1/requests")) {
+            return HttpMethod.GET.equals(method);
+        }
+
+        return false;
     }
 
     @Override
