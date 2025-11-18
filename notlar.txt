@@ -2,3 +2,5 @@ API belgesinin yeni halini at
 docker kullanma kılavuzu oluştur
 swagger ekle test et
 api gateway ekle test et
+
+içinde bir exception handling var zaten. Ayrıca bu servis JWT doğrulama da yapıyor sanırım. API Gateway için bu 2 özelliği eklmemeiz mantıklı mı? 
