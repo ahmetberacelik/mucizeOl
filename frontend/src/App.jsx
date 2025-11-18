@@ -3,8 +3,11 @@ import { AuthProvider } from './context/AuthContext'
 import Home from './pages/Home/Home'
 import Login from './pages/Login/Login'
 import Register from './pages/Register/Register'
+import CreateListing from './pages/CreateListing/CreateListing'
+import ListingDetail from './pages/ListingDetail/ListingDetail'
 import Header from './components/common/Header/Header'
 import Footer from './components/common/Footer/Footer'
+import ProtectedRoute from './components/common/ProtectedRoute/ProtectedRoute'
 
 function App() {
   return (
@@ -17,6 +20,15 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
+              <Route path="/listings/:id" element={<ListingDetail />} />
+              <Route 
+                path="/create-listing" 
+                element={
+                  <ProtectedRoute>
+                    <CreateListing />
+                  </ProtectedRoute>
+                } 
+              />
             </Routes>
           </main>
           <Footer />
