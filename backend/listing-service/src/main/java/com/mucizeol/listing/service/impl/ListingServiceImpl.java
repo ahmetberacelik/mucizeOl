@@ -130,6 +130,9 @@ public class ListingServiceImpl implements ListingService {
         if (request.getGender() != null) {
             listing.setGender(request.getGender());
         }
+        if (request.getStatus() != null) {
+            listing.setStatus(request.getStatus());
+        }
 
         ListingEntity updated = listingRepository.save(listing);
         return mapToResponse(updated);
