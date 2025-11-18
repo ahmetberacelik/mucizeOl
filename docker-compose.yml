@@ -31,6 +31,7 @@ services:
     build:
       context: ./backend
       dockerfile: auth-service/Dockerfile
+    container_name: mucizeol-auth-service
     depends_on:
       mysql-db:
         condition: service_healthy
@@ -42,8 +43,33 @@ services:
       - DB_NAME=${DB_NAME}
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_ACCESS_TOKEN_MINUTES=${JWT_ACCESS_TOKEN_MINUTES}
+      - JWT_REFRESH_TOKEN_DAYS=${JWT_REFRESH_TOKEN_DAYS}
     ports:
       - "${SERVER_PORT}:${SERVER_PORT}"
+
+  gateway-service:
+    build:
+      context: ./backend
+      dockerfile: gateway-service/Dockerfile
+    container_name: mucizeol-gateway
+    depends_on:
+      - auth-service
+    env_file: .env
+    environment:
+      - SERVER_PORT=${GATEWAY_PORT}
+      - GATEWAY_PORT=${GATEWAY_PORT}
+      - JWT_SECRET=${JWT_SECRET}
+      - AUTH_SERVICE_HOST=${AUTH_SERVICE_HOST}
+      - AUTH_SERVICE_PORT=${AUTH_SERVICE_PORT}
+      - LISTING_SERVICE_HOST=${LISTING_SERVICE_HOST}
+      - LISTING_SERVICE_PORT=${LISTING_SERVICE_PORT}
+      - REQUEST_SERVICE_HOST=${REQUEST_SERVICE_HOST}
+      - REQUEST_SERVICE_PORT=${REQUEST_SERVICE_PORT}
+      - CORS_ALLOWED_ORIGINS=${CORS_ALLOWED_ORIGINS}
+    ports:
+      - "${GATEWAY_PORT}:${GATEWAY_PORT}"
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:5.2.1
