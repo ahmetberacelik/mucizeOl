@@ -35,6 +35,11 @@ public class JwtAuthenticationFilter implements GlobalFilter, Ordered {
         String path = exchange.getRequest().getPath().value();
         HttpMethod method = exchange.getRequest().getMethod();
 
+        // OPTIONS istekleri (CORS preflight) her zaman geçer
+        if (HttpMethod.OPTIONS.equals(method)) {
+            return chain.filter(exchange);
+        }
+
         // Public endpoint kontrolü
         if (isPublicPath(path, method)) {
             return chain.filter(exchange);
@@ -79,8 +84,13 @@ public class JwtAuthenticationFilter implements GlobalFilter, Ordered {
             return true;
         }
 
-        // Sadece ilanlar için GET public (listing listesi, detay herkes görebilir)
+        // İlanlar için GET public (listing listesi, detay herkes görebilir)
+        // ANCAK /my-listings endpoint'i protected olmalı
         if (path.startsWith("/api/v1/listings")) {
+            // /my-listings endpoint'i protected
+            if (path.contains("/my-listings")) {
+                return false;
+            }
             return HttpMethod.GET.equals(method);
         }
 

@@ -60,6 +60,15 @@ public class ListingController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/my-listings")
+    public ResponseEntity<Page<ListingResponse>> getMyListings(
+            @RequestHeader("X-User-Id") Long userId,
+            @PageableDefault(size = 100, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+        
+        Page<ListingResponse> response = listingService.getMyListings(userId, pageable);
+        return ResponseEntity.ok(response);
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<ListingResponse> updateListing(
             @PathVariable Long id,

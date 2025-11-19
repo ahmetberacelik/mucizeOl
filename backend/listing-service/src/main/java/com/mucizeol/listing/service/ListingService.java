@@ -15,6 +15,8 @@ public interface ListingService {
 
     ListingResponse getListingById(Long id);
 
+    Page<ListingResponse> getMyListings(Long userId, Pageable pageable);
+
     ListingResponse updateListing(Long id, UpdateListingRequest request, Long userId);
 
     void deleteListing(Long id, Long userId, String userRole);

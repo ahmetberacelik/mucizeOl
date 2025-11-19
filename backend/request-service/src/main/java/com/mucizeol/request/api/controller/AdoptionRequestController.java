@@ -2,7 +2,7 @@ package com.mucizeol.request.api.controller;
 
 import com.mucizeol.request.api.dto.request.CreateAdoptionRequestRequest;
 import com.mucizeol.request.api.dto.response.AdoptionRequestResponse;
-import com.mucizeol.request.api.dto.response.MessageResponse;
+import com.mucizeol.request.api.dto.response.SimpleMessageResponse;
 import com.mucizeol.request.service.AdoptionRequestService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -62,12 +62,12 @@ public class AdoptionRequestController {
      * Talebi onaylar (ilan sahibi)
      */
     @PostMapping("/{id}/approve")
-    public ResponseEntity<MessageResponse> approveRequest(
+    public ResponseEntity<SimpleMessageResponse> approveRequest(
             @PathVariable("id") Long requestId,
             @RequestHeader("X-User-Id") Long userId
     ) {
         log.info("POST /api/v1/requests/{}/approve - userId: {}", requestId, userId);
-        MessageResponse response = adoptionRequestService.approveRequest(requestId, userId);
+        SimpleMessageResponse response = adoptionRequestService.approveRequest(requestId, userId);
         return ResponseEntity.ok(response);
     }
 
@@ -75,12 +75,12 @@ public class AdoptionRequestController {
      * Talebi reddeder (ilan sahibi)
      */
     @PostMapping("/{id}/reject")
-    public ResponseEntity<MessageResponse> rejectRequest(
+    public ResponseEntity<SimpleMessageResponse> rejectRequest(
             @PathVariable("id") Long requestId,
             @RequestHeader("X-User-Id") Long userId
     ) {
         log.info("POST /api/v1/requests/{}/reject - userId: {}", requestId, userId);
-        MessageResponse response = adoptionRequestService.rejectRequest(requestId, userId);
+        SimpleMessageResponse response = adoptionRequestService.rejectRequest(requestId, userId);
         return ResponseEntity.ok(response);
     }
 }

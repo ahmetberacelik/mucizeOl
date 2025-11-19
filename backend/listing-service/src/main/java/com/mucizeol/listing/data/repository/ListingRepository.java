@@ -14,5 +14,8 @@ public interface ListingRepository extends JpaRepository<ListingEntity, Long>,
     
     // Yetki kontrolü için
     boolean existsByIdAndUserId(Long id, Long userId);
+    
+    // Kullanıcının ilanlarını getir (tüm status'ler)
+    Page<ListingEntity> findByUserIdOrderByCreatedAtDesc(Long userId, Pageable pageable);
 }
 

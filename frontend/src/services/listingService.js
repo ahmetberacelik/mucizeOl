@@ -2,12 +2,21 @@ import api from './api';
 
 export const listingService = {
   getListings: async (params = {}) => {
+    console.log('getListings çağrılıyor, params:', params);
     const response = await api.get('/listings', { params });
+    console.log('getListings yanıtı:', response.data);
     return response.data;
   },
 
   getListingById: async (id) => {
     const response = await api.get(`/listings/${id}`);
+    return response.data;
+  },
+
+  getMyListings: async (params = {}) => {
+    console.log('getMyListings çağrılıyor, params:', params);
+    const response = await api.get('/listings/my-listings', { params });
+    console.log('getMyListings yanıtı:', response.data);
     return response.data;
   },
 

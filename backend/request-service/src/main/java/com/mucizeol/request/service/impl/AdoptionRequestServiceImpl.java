@@ -2,7 +2,7 @@ package com.mucizeol.request.service.impl;
 
 import com.mucizeol.request.api.dto.request.CreateAdoptionRequestRequest;
 import com.mucizeol.request.api.dto.response.AdoptionRequestResponse;
-import com.mucizeol.request.api.dto.response.MessageResponse;
+import com.mucizeol.request.api.dto.response.SimpleMessageResponse;
 import com.mucizeol.request.data.entity.AdoptionRequestEntity;
 import com.mucizeol.request.data.repository.AdoptionRequestRepository;
 import com.mucizeol.request.exception.BusinessException;
@@ -103,7 +103,7 @@ public class AdoptionRequestServiceImpl implements AdoptionRequestService {
 
     @Override
     @Transactional
-    public MessageResponse approveRequest(Long requestId, Long userId) {
+    public SimpleMessageResponse approveRequest(Long requestId, Long userId) {
         log.info("Talep onaylanıyor - requestId: {}, userId: {}", requestId, userId);
 
         // 1. Talep var mı kontrol et
@@ -127,16 +127,16 @@ public class AdoptionRequestServiceImpl implements AdoptionRequestService {
         request.setStatus("Onaylandı");
         adoptionRequestRepository.save(request);
 
-        // 6. İlan durumunu "Sahiplendirildi" olarak güncelle (ilan sahibinin userId'si ile)
-        listingServiceClient.updateListingStatus(listing.getListingId(), "Sahiplendirildi", listing.getUserId());
+        // 6. İlan durumunu değiştirme - mesajlaşma başlatılacak
+        // İlan durumu "Mevcut" olarak kalacak, böylece birden fazla kişiyle iletişim kurulabilir
 
-        log.info("Talep onaylandı ve ilan durumu güncellendi - requestId: {}", requestId);
-        return MessageResponse.of("Talep onaylandı ve ilan 'Sahiplendirildi' olarak güncellendi.");
+        log.info("Talep onaylandı - mesajlaşma başlatılabilir - requestId: {}", requestId);
+        return SimpleMessageResponse.of("Talep onaylandı. Artık bu kişiyle mesajlaşabilirsiniz.");
     }
 
     @Override
     @Transactional
-    public MessageResponse rejectRequest(Long requestId, Long userId) {
+    public SimpleMessageResponse rejectRequest(Long requestId, Long userId) {
         log.info("Talep reddediliyor - requestId: {}, userId: {}", requestId, userId);
 
         // 1. Talep var mı kontrol et
@@ -161,7 +161,7 @@ public class AdoptionRequestServiceImpl implements AdoptionRequestService {
         adoptionRequestRepository.save(request);
 
         log.info("Talep reddedildi - requestId: {}", requestId);
-        return MessageResponse.of("Talep reddedildi.");
+        return SimpleMessageResponse.of("Talep reddedildi.");
     }
 
     private AdoptionRequestResponse mapToResponse(AdoptionRequestEntity entity) {
