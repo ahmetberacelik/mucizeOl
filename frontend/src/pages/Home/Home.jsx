@@ -82,9 +82,9 @@ const Home = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-blue-50 to-blue-100">
       {/* Hero Section */}
-      <div className="relative overflow-hidden bg-gradient-to-r from-primary-600 via-primary-500 to-primary-700 py-20 mb-12">
+      <div className="relative overflow-hidden py-20 mb-12" style={{ backgroundColor: '#58afeb' }}>
         <div 
           className="absolute inset-0 opacity-20"
           style={{
@@ -105,26 +105,24 @@ const Home = () => {
             <div className="text-center md:text-left">
               {/* MucizeOl Logo/Brand */}
               <div className="mb-8">
-                <h1 className="text-7xl md:text-8xl font-black text-white mb-4 leading-none drop-shadow-2xl">
-                  <span className="block text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 via-yellow-300 to-yellow-400 animate-pulse">
+                <h1 className="text-7xl md:text-8xl font-black mb-4 leading-none drop-shadow-2xl">
+                  <span className="inline-block text-blue-900">
                     Mucize
                   </span>
-                  <span className="block text-white">Ol</span>
+                  <span className="inline-block text-green-400">O</span>
+                  <span className="inline-block text-green-400">l</span>
                 </h1>
               </div>
               
               {/* Slogan */}
               <div className="mb-8">
-                <p className="text-2xl md:text-3xl font-bold text-white mb-4 leading-relaxed drop-shadow-lg">
-                  Bir hayvana mucize olmak,
-                </p>
-                <p className="text-2xl md:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 to-yellow-400 leading-relaxed drop-shadow-lg">
-                  bir hayvanın da bize mucize olabileceği
+                <p className="text-2xl md:text-3xl font-bold text-white leading-relaxed drop-shadow-lg">
+                  Mucize ol, mucizeni bul
                 </p>
               </div>
               
               <p className="text-lg text-white/90 mb-8 leading-relaxed">
-                Sevimli dostlarımız için yeni bir yuva bulalım. Her hayvan bir aileyi bekliyor.
+                Sevimli dostlarımız için yeni bir yuva bulalım. Her hayvan mucizesini bekliyor.
               </p>
               <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 text-white/80 mb-8">
                 <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">

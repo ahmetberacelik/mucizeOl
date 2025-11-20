@@ -7,8 +7,10 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
           {/* Brand Section */}
           <div className="md:col-span-2">
-            <h3 className="text-2xl font-extrabold mb-4 bg-gradient-to-r from-primary-400 to-primary-600 bg-clip-text text-transparent">
-              MucizeOl
+            <h3 className="text-2xl font-extrabold mb-4 flex items-center">
+              <span className="text-blue-900">Mucize</span>
+              <span className="text-green-400">O</span>
+              <span className="text-green-400">l</span>
             </h3>
             <p className="text-gray-300 mb-4 leading-relaxed max-w-md">
               Hayvan sahiplenme ve sahiplendirme platformu. Her hayvan bir aileyi bekliyor, 
@@ -108,7 +110,11 @@ const Footer = () => {
         <div className="border-t border-gray-700 pt-8 mt-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-gray-400 text-sm">
-              &copy; 2025 <span className="text-primary-400 font-semibold">MucizeOl</span>. Tüm hakları saklıdır.
+              &copy; 2025 <span className="text-primary-400 font-semibold flex items-center">
+                <span className="text-blue-900">Mucize</span>
+                <span className="text-green-400">O</span>
+                <span className="text-green-400">l</span>
+              </span>. Tüm hakları saklıdır.
             </p>
             <div className="flex gap-6 text-sm text-gray-400">
               <a href="#" className="hover:text-primary-400 transition-colors duration-300">Gizlilik Politikası</a>

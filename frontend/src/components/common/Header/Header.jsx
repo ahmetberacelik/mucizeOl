@@ -18,9 +18,11 @@ const Header = () => {
         <div className="flex items-center justify-between">
           <Link 
             to="/" 
-            className="text-3xl font-extrabold bg-gradient-to-r from-primary-600 via-primary-500 to-primary-700 bg-clip-text text-transparent hover:scale-105 transition-transform duration-300"
+            className="text-3xl font-extrabold hover:scale-105 transition-transform duration-300 flex items-center"
           >
-            MucizeOl
+            <span className="text-blue-900">Mucize</span>
+            <span className="text-green-400">O</span>
+            <span className="text-green-400">l</span>
           </Link>
 
           <div className="flex items-center gap-6">
