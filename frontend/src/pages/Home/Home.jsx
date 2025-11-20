@@ -82,9 +82,9 @@ const Home = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-blue-50 to-blue-100">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50">
       {/* Hero Section */}
-      <div className="relative overflow-hidden py-20 mb-12" style={{ backgroundColor: '#58afeb' }}>
+      <div className="relative overflow-hidden bg-gradient-to-r from-primary-600 via-primary-500 to-primary-700 py-6 sm:py-10 md:py-16 lg:py-20 mb-6 sm:mb-8 md:mb-12">
         <div 
           className="absolute inset-0 opacity-20"
           style={{
@@ -99,46 +99,51 @@ const Home = () => {
           <div className="absolute top-1/2 left-1/4 w-24 h-24 rounded-full bg-white/5 blur-xl"></div>
         </div>
 
-        <div className="container mx-auto px-6 relative z-10">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
+        <div className="container mx-auto px-4 sm:px-6 relative z-10">
+          <div className="grid md:grid-cols-2 gap-6 md:gap-12 items-center">
             {/* Text Content */}
             <div className="text-center md:text-left">
               {/* MucizeOl Logo/Brand */}
-              <div className="mb-8">
-                <h1 className="text-7xl md:text-8xl font-black mb-4 leading-none drop-shadow-2xl">
-                  <span className="inline-block text-blue-900">
+              <div className="mb-4 sm:mb-6 md:mb-8">
+                <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black mb-2 sm:mb-3 md:mb-4 leading-tight drop-shadow-2xl">
+                  <span className="block text-blue-900">
                     Mucize
                   </span>
-                  <span className="inline-block text-green-400">O</span>
-                  <span className="inline-block text-green-400">l</span>
+                  <span className="block text-white">
+                    <span className="text-green-400">O</span>
+                    <span className="text-green-400">l</span>
+                  </span>
                 </h1>
               </div>
               
               {/* Slogan */}
-              <div className="mb-8">
-                <p className="text-2xl md:text-3xl font-bold text-white leading-relaxed drop-shadow-lg">
-                  Mucize ol, mucizeni bul
+              <div className="mb-4 sm:mb-6 md:mb-8">
+                <p className="text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold text-white mb-1 sm:mb-2 md:mb-4 leading-tight sm:leading-relaxed drop-shadow-lg">
+                  Bir hayvana mucize olmak,
+                </p>
+                <p className="text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 to-yellow-400 leading-tight sm:leading-relaxed drop-shadow-lg">
+                  bir hayvanın da bize mucize olabileceği
                 </p>
               </div>
               
-              <p className="text-lg text-white/90 mb-8 leading-relaxed">
-                Sevimli dostlarımız için yeni bir yuva bulalım. Her hayvan mucizesini bekliyor.
+              <p className="text-xs sm:text-sm md:text-base lg:text-lg text-white/90 mb-4 sm:mb-6 md:mb-8 leading-relaxed px-1 sm:px-2 md:px-0">
+                Sevimli dostlarımız için yeni bir yuva bulalım. Her hayvan bir aileyi bekliyor.
               </p>
-              <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 text-white/80 mb-8">
-                <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 sm:gap-3 md:gap-4 text-white/80 mb-2 sm:mb-4 md:mb-8">
+                <div className="flex items-center gap-1.5 sm:gap-2 bg-white/10 backdrop-blur-sm px-2.5 sm:px-3 md:px-4 py-1 sm:py-1.5 md:py-2 rounded-full text-xs sm:text-sm md:text-base">
+                  <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                   </svg>
                   <span className="font-medium">Güvenli</span>
                 </div>
-                <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <div className="flex items-center gap-1.5 sm:gap-2 bg-white/10 backdrop-blur-sm px-2.5 sm:px-3 md:px-4 py-1 sm:py-1.5 md:py-2 rounded-full text-xs sm:text-sm md:text-base">
+                  <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                   </svg>
                   <span className="font-medium">Kolay</span>
                 </div>
-                <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <div className="flex items-center gap-1.5 sm:gap-2 bg-white/10 backdrop-blur-sm px-2.5 sm:px-3 md:px-4 py-1 sm:py-1.5 md:py-2 rounded-full text-xs sm:text-sm md:text-base">
+                  <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
                   </svg>
                   <span className="font-medium">Sevgi Dolu</span>
@@ -201,9 +206,9 @@ const Home = () => {
         </div>
       </div>
 
-      <div className="container mx-auto px-6 pb-12">
+      <div className="container mx-auto px-3 sm:px-4 md:px-6 pb-6 sm:pb-8 md:pb-12">
         {/* Filtreleme Bileşeni */}
-        <div className="mb-10">
+        <div className="mb-4 sm:mb-6 md:mb-10">
           <ListingFilters onFilterChange={handleFilterChange} filters={filters} />
         </div>
 
@@ -258,14 +263,14 @@ const Home = () => {
             ) : (
               <>
                 {/* Results Count */}
-                <div className="mb-6 flex items-center justify-between">
-                  <p className="text-gray-600 font-medium">
+                <div className="mb-4 sm:mb-6 flex items-center justify-between">
+                  <p className="text-sm sm:text-base text-gray-600 font-medium">
                     <span className="text-primary-600 font-bold">{pagination.totalElements}</span> ilan bulundu
                   </p>
                 </div>
 
                 {/* Grid Layout - Modern Card Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 mb-12">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 mb-8 sm:mb-12">
                   {listings.map((listing) => (
                     <ListingCard key={listing.listingId} listing={listing} />
                   ))}
@@ -273,33 +278,55 @@ const Home = () => {
 
                 {/* Pagination - Modern Design */}
                 {pagination.totalPages > 1 && (
-                  <div className="flex items-center justify-center gap-2">
+                  <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-2">
                     <button
                       onClick={() => handlePageChange(pagination.page - 1)}
                       disabled={pagination.page === 0}
-                      className="px-4 py-2 rounded-lg font-medium transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed bg-white border-2 border-gray-200 text-gray-700 hover:border-primary-600 hover:text-primary-600 hover:shadow-md disabled:hover:border-gray-200 disabled:hover:text-gray-700"
+                      className="px-3 sm:px-4 py-2 rounded-lg font-medium transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed bg-white border-2 border-gray-200 text-gray-700 hover:border-primary-600 hover:text-primary-600 hover:shadow-md disabled:hover:border-gray-200 disabled:hover:text-gray-700 text-sm sm:text-base"
                     >
                       Önceki
                     </button>
                     
-                    {[...Array(pagination.totalPages)].map((_, index) => (
-                      <button
-                        key={index}
-                        onClick={() => handlePageChange(index)}
-                        className={`px-4 py-2 rounded-lg font-semibold transition-all duration-300 ${
-                          pagination.page === index
-                            ? 'bg-gradient-to-r from-primary-600 to-primary-700 text-white shadow-lg scale-110'
-                            : 'bg-white border-2 border-gray-200 text-gray-700 hover:border-primary-600 hover:text-primary-600 hover:shadow-md'
-                        }`}
-                      >
-                        {index + 1}
-                      </button>
-                    ))}
+                    <div className="flex flex-wrap items-center justify-center gap-1 sm:gap-2">
+                      {[...Array(pagination.totalPages)].map((_, index) => {
+                        // Mobilde sadece ilk, son ve mevcut sayfa civarındaki sayfaları göster
+                        const showPage = pagination.totalPages <= 7 || 
+                                        index === 0 || 
+                                        index === pagination.totalPages - 1 || 
+                                        (index >= pagination.page - 1 && index <= pagination.page + 1);
+                        
+                        if (!showPage && pagination.totalPages > 7) {
+                          // Elipsis göster
+                          if (index === pagination.page - 2 || index === pagination.page + 2) {
+                            return (
+                              <span key={index} className="px-2 text-gray-500">
+                                ...
+                              </span>
+                            );
+                          }
+                          return null;
+                        }
+                        
+                        return (
+                          <button
+                            key={index}
+                            onClick={() => handlePageChange(index)}
+                            className={`px-3 sm:px-4 py-2 rounded-lg font-semibold transition-all duration-300 text-sm sm:text-base ${
+                              pagination.page === index
+                                ? 'bg-gradient-to-r from-primary-600 to-primary-700 text-white shadow-lg scale-110'
+                                : 'bg-white border-2 border-gray-200 text-gray-700 hover:border-primary-600 hover:text-primary-600 hover:shadow-md'
+                            }`}
+                          >
+                            {index + 1}
+                          </button>
+                        );
+                      })}
+                    </div>
                     
                     <button
                       onClick={() => handlePageChange(pagination.page + 1)}
                       disabled={pagination.page >= pagination.totalPages - 1}
-                      className="px-4 py-2 rounded-lg font-medium transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed bg-white border-2 border-gray-200 text-gray-700 hover:border-primary-600 hover:text-primary-600 hover:shadow-md disabled:hover:border-gray-200 disabled:hover:text-gray-700"
+                      className="px-3 sm:px-4 py-2 rounded-lg font-medium transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed bg-white border-2 border-gray-200 text-gray-700 hover:border-primary-600 hover:text-primary-600 hover:shadow-md disabled:hover:border-gray-200 disabled:hover:text-gray-700 text-sm sm:text-base"
                     >
                       Sonraki
                     </button>
