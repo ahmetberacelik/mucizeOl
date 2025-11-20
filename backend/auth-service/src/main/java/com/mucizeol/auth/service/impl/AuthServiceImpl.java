@@ -95,6 +95,14 @@ public class AuthServiceImpl implements AuthService {
         return mapToUserResponse(user);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public UserResponse getUserById(Long userId) { // userId'ye göre kullanıcıyı getir
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("AUTH.USER_NOT_FOUND", "Kullanıcı bulunamadı"));
+        return mapToUserResponse(user);
+    }
+
     private AuthTokensResponse issueTokens(UserEntity user) { // access ve refresh token üret
         String accessToken = jwtTokenService.generateAccessToken(user.getId(), user.getEmail(), user.getRole().getName());
         String refreshToken = buildRefreshToken(user);
