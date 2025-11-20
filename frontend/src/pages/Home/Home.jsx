@@ -106,10 +106,8 @@ const Home = () => {
               {/* MucizeOl Logo/Brand */}
               <div className="mb-4 sm:mb-6 md:mb-8">
                 <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black mb-2 sm:mb-3 md:mb-4 leading-tight drop-shadow-2xl">
-                  <span className="block text-blue-900">
-                    Mucize
-                  </span>
-                  <span className="block text-white">
+                  <span className="inline-block text-blue-900">Mucize</span>
+                  <span className="inline-block text-white ml-2 sm:ml-3">
                     <span className="text-green-400">O</span>
                     <span className="text-green-400">l</span>
                   </span>
@@ -118,11 +116,8 @@ const Home = () => {
               
               {/* Slogan */}
               <div className="mb-4 sm:mb-6 md:mb-8">
-                <p className="text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold text-white mb-1 sm:mb-2 md:mb-4 leading-tight sm:leading-relaxed drop-shadow-lg">
-                  Bir hayvana mucize olmak,
-                </p>
-                <p className="text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 to-yellow-400 leading-tight sm:leading-relaxed drop-shadow-lg">
-                  bir hayvanın da bize mucize olabileceği
+                <p className="text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold text-white leading-tight sm:leading-relaxed drop-shadow-lg">
+                  Mucize ol, mucizeni bul
                 </p>
               </div>
               
