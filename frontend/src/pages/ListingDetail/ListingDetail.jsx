@@ -125,7 +125,29 @@ const ListingDetail = () => {
       navigate('/profile?tab=my-listings');
     } catch (err) {
       console.error('İlan silinirken hata:', err);
-      setDeleteError(err.response?.data?.message || 'İlan silinirken bir hata oluştu');
+      console.error('Hata detayları:', {
+        message: err.message,
+        status: err.response?.status,
+        statusText: err.response?.statusText,
+        data: err.response?.data,
+        url: err.config?.url,
+      });
+      
+      // Daha detaylı hata mesajı
+      let errorMessage = 'İlan silinirken bir hata oluştu';
+      if (err.response?.data) {
+        if (err.response.data.message) {
+          errorMessage = err.response.data.message;
+        } else if (err.response.data.error) {
+          errorMessage = err.response.data.error;
+        } else if (typeof err.response.data === 'string') {
+          errorMessage = err.response.data;
+        }
+      } else if (err.message) {
+        errorMessage = err.message;
+      }
+      
+      setDeleteError(errorMessage);
       setDeleting(false);
     }
   };
