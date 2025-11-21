@@ -3,8 +3,24 @@ import { tokenManager } from '../utils/tokenManager';
 
 export const authService = {
   register: async (userData) => {
-    const response = await api.post('/auth/register', userData);
-    return response.data;
+    try {
+      console.log('Register isteği gönderiliyor:', userData);
+      const response = await api.post('/auth/register', userData);
+      console.log('Register başarılı:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Register hatası:', error);
+      console.error('Hata detayları:', {
+        message: error.message,
+        status: error.response?.status,
+        statusText: error.response?.statusText,
+        data: error.response?.data,
+        url: error.config?.url,
+        baseURL: error.config?.baseURL,
+        fullURL: `${error.config?.baseURL}${error.config?.url}`
+      });
+      throw error;
+    }
   },
 
   login: async (credentials) => {
@@ -40,6 +56,25 @@ export const authService = {
   getCurrentUser: async () => {
     const response = await api.get('/auth/me');
     return response.data;
+  },
+
+  getUserById: async (userId) => {
+    console.log('authService.getUserById çağrılıyor, userId:', userId);
+    try {
+      const response = await api.get(`/auth/users/${userId}`);
+      console.log('authService.getUserById başarılı:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('authService.getUserById hatası:', error);
+      console.error('Hata detayları:', {
+        message: error.message,
+        status: error.response?.status,
+        statusText: error.response?.statusText,
+        data: error.response?.data,
+        url: error.config?.url,
+      });
+      throw error;
+    }
   },
 };
 

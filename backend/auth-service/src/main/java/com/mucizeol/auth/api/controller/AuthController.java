@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -65,6 +66,13 @@ public class AuthController {
     public ResponseEntity<UserResponse> me() { // current user bilgisi
         Long userId = getCurrentUserId();
         UserResponse response = authService.getCurrentUser(userId);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/users/{userId}")
+    @Operation(summary = "Kullanıcı bilgilerini getir", security = @SecurityRequirement(name = "bearerAuth"))
+    public ResponseEntity<UserResponse> getUserById(@PathVariable Long userId) { // userId'ye göre kullanıcı bilgisi
+        UserResponse response = authService.getUserById(userId);
         return ResponseEntity.ok(response);
     }
 

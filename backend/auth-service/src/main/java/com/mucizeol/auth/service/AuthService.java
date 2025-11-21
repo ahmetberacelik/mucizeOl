@@ -17,5 +17,7 @@ public interface AuthService { // auth iş mantığı sözleşmesi
     void logout(Long userId); // oturumu kapat
 
     UserResponse getCurrentUser(Long userId); // mevcut kullanıcıyı getir
+
+    UserResponse getUserById(Long userId); // userId'ye göre kullanıcıyı getir
 }
 

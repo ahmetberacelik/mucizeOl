@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { messageService } from '../../services/messageService';
 import { listingService } from '../../services/listingService';
+import { authService } from '../../services/authService';
 
 const Messages = () => {
   const { user, isAuthenticated } = useAuth();
@@ -16,6 +17,9 @@ const Messages = () => {
   const [listingInfo, setListingInfo] = useState(null);
   const [otherUserInfo, setOtherUserInfo] = useState(null);
   const messagesEndRef = useRef(null);
+  const messagesContainerRef = useRef(null);
+  const shouldScrollRef = useRef(true);
+  const previousMessagesLengthRef = useRef(0);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -53,6 +57,8 @@ const Messages = () => {
 
   useEffect(() => {
     if (selectedConversation) {
+      shouldScrollRef.current = false; // İlk yüklemede scroll yapma
+      previousMessagesLengthRef.current = 0;
       fetchConversationDetails();
       // Her 3 saniyede bir mesajları yenile
       const interval = setInterval(() => {
@@ -62,11 +68,65 @@ const Messages = () => {
     }
   }, [selectedConversation, user?.userId, searchParams]);
 
+  // Scroll kontrolü - sadece gerektiğinde scroll yap
   useEffect(() => {
-    scrollToBottom();
+    if (messages.length === 0) return;
+    
+    const container = messagesContainerRef.current;
+    if (!container) return;
+
+    // Yeni mesaj eklendi mi kontrol et
+    const isNewMessage = messages.length > previousMessagesLengthRef.current;
+    const previousLength = previousMessagesLengthRef.current;
+    previousMessagesLengthRef.current = messages.length;
+
+    // İlk yükleme mi kontrol et (önceki mesaj sayısı 0 ise)
+    const isInitialLoad = previousLength === 0;
+
+    // Scroll yapılmalı mı kontrol et
+    // Sadece: 1) Mesaj gönderildiğinde (shouldScrollRef = true) VEYA
+    //         2) Yeni mesaj geldiğinde VE kullanıcı zaten en alttaysa
+    // İlk yüklemede scroll yapma
+    if (!isInitialLoad && (shouldScrollRef.current || isNewMessage)) {
+      // Kullanıcı en altta mı kontrol et (100px tolerans)
+      const isNearBottom = 
+        container.scrollHeight - container.scrollTop - container.clientHeight < 100;
+      
+      // Eğer yeni mesaj eklendiyse ve kullanıcı en alttaysa, scroll yap
+      // Veya shouldScrollRef true ise (mesaj gönderildi)
+      if (shouldScrollRef.current || (isNewMessage && isNearBottom)) {
+        setTimeout(() => {
+          messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+          shouldScrollRef.current = false; // Scroll yapıldı, bir sonraki için false yap
+        }, 100);
+      }
+    }
   }, [messages]);
 
+  // Scroll pozisyonunu izle - kullanıcı yukarı scroll yaparsa otomatik scroll'u durdur
+  useEffect(() => {
+    const container = messagesContainerRef.current;
+    if (!container) return;
+
+    const handleScroll = () => {
+      const isNearBottom = 
+        container.scrollHeight - container.scrollTop - container.clientHeight < 100;
+      
+      // Kullanıcı yukarı scroll yapmışsa, otomatik scroll'u durdur
+      if (!isNearBottom) {
+        shouldScrollRef.current = false;
+      } else {
+        // Kullanıcı tekrar en alta gelirse, otomatik scroll'u aktif et
+        shouldScrollRef.current = true;
+      }
+    };
+
+    container.addEventListener('scroll', handleScroll);
+    return () => container.removeEventListener('scroll', handleScroll);
+  }, [selectedConversation]);
+
   const scrollToBottom = () => {
+    shouldScrollRef.current = true;
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
@@ -81,15 +141,24 @@ const Messages = () => {
           try {
             const listing = await listingService.getListingById(conv.listingId);
             const otherUserId = conv.otherUserId;
-            let otherUser = null;
+            let otherUserName = conv.otherUserName;
             
-            // Kullanıcı bilgisini getir (basit bir yaklaşım - gerçekte auth-service'den alınmalı)
-            // Şimdilik userId'yi gösteriyoruz
+            // Kullanıcı bilgisini getir
+            if (!otherUserName && otherUserId) {
+              try {
+                const userData = await authService.getUserById(otherUserId);
+                otherUserName = `${userData.firstName} ${userData.lastName}`;
+              } catch (error) {
+                console.error('Kullanıcı bilgisi alınamadı:', error);
+                otherUserName = `Kullanıcı ${otherUserId}`;
+              }
+            }
+            
             return {
               ...conv,
               listingTitle: listing.title,
               listingImage: listing.imageUrl,
-              otherUserName: otherUser ? `${otherUser.firstName} ${otherUser.lastName}` : `Kullanıcı ${otherUserId}`,
+              otherUserName: otherUserName || `Kullanıcı ${otherUserId}`,
             };
           } catch (error) {
             console.error('Conversation bilgisi getirilemedi:', error);
@@ -139,11 +208,30 @@ const Messages = () => {
         return;
       }
       
-      // otherUserInfo'yu hemen ayarla (mesaj gönderebilmek için)
-      setOtherUserInfo({
-        userId: otherUserId,
-        name: `Kullanıcı ${otherUserId}`,
-      });
+      // Kullanıcı bilgilerini al (geçici olarak)
+      try {
+        console.log('Kullanıcı bilgisi alınıyor, otherUserId:', otherUserId);
+        const userData = await authService.getUserById(otherUserId);
+        console.log('Kullanıcı bilgisi alındı:', userData);
+        const fullName = `${userData.firstName} ${userData.lastName}`;
+        console.log('Kullanıcı adı:', fullName);
+        setOtherUserInfo({
+          userId: otherUserId,
+          name: fullName,
+        });
+      } catch (error) {
+        console.error('Kullanıcı bilgisi alınamadı:', error);
+        console.error('Hata detayları:', {
+          message: error.message,
+          status: error.response?.status,
+          statusText: error.response?.statusText,
+          data: error.response?.data,
+        });
+        setOtherUserInfo({
+          userId: otherUserId,
+          name: `Kullanıcı ${otherUserId}`,
+        });
+      }
       
       // Conversation'ı getirmeyi dene (eğer mesajlar varsa)
       try {
@@ -154,9 +242,30 @@ const Messages = () => {
           otherUserId = data.otherUserId;
         }
         
+        // Kullanıcı bilgilerini al
+        let otherUserName = data.otherUserName;
+        if (!otherUserName && otherUserId) {
+          try {
+            console.log('Conversation içinde kullanıcı bilgisi alınıyor, otherUserId:', otherUserId);
+            const userData = await authService.getUserById(otherUserId);
+            console.log('Conversation içinde kullanıcı bilgisi alındı:', userData);
+            otherUserName = `${userData.firstName} ${userData.lastName}`;
+            console.log('Conversation içinde kullanıcı adı:', otherUserName);
+          } catch (error) {
+            console.error('Conversation içinde kullanıcı bilgisi alınamadı:', error);
+            console.error('Hata detayları:', {
+              message: error.message,
+              status: error.response?.status,
+              statusText: error.response?.statusText,
+              data: error.response?.data,
+            });
+            otherUserName = `Kullanıcı ${otherUserId}`;
+          }
+        }
+        
         setOtherUserInfo({
           userId: otherUserId,
-          name: data.otherUserName || `Kullanıcı ${otherUserId}`,
+          name: otherUserName || `Kullanıcı ${otherUserId}`,
         });
         
         setMessages(data.messages || []);
@@ -176,10 +285,20 @@ const Messages = () => {
       // Hata durumunda bile listing bilgisini göster
       const receiverId = searchParams.get('receiverId');
       if (receiverId) {
-        setOtherUserInfo({
-          userId: Number(receiverId),
-          name: `Kullanıcı ${receiverId}`,
-        });
+        const receiverUserId = Number(receiverId);
+        try {
+          const userData = await authService.getUserById(receiverUserId);
+          setOtherUserInfo({
+            userId: receiverUserId,
+            name: `${userData.firstName} ${userData.lastName}`,
+          });
+        } catch (userError) {
+          console.error('Kullanıcı bilgisi alınamadı:', userError);
+          setOtherUserInfo({
+            userId: receiverUserId,
+            name: `Kullanıcı ${receiverUserId}`,
+          });
+        }
       }
     }
   };
@@ -215,6 +334,7 @@ const Messages = () => {
       setNewMessage('');
       
       // Mesajları hemen yenile
+      shouldScrollRef.current = true; // Mesaj gönderildiğinde scroll yap
       await fetchConversationDetails();
       await fetchConversations();
     } catch (error) {
@@ -362,7 +482,7 @@ const Messages = () => {
                   </div>
 
                   {/* Mesajlar */}
-                  <div className="flex-1 overflow-y-auto p-6 bg-gray-50 space-y-4">
+                  <div ref={messagesContainerRef} className="flex-1 overflow-y-auto p-6 bg-gray-50 space-y-4">
                     {messages.map((message) => {
                       const isOwn = message.senderId === user?.userId;
                       return (
